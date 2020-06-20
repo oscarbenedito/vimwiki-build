@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import sys
 import json
+import datetime
 
 
 VWDIR = '/home/oscar/Documents/wiki'
@@ -57,6 +58,7 @@ def file_create_data(file):
     if len(f['categories']) == 0:
         f['categories'].append('uncategorized')
 
+    ret = n
     # Description
     if n == 0 or lines[n] == '':
         if lines[n] == '':
@@ -72,7 +74,7 @@ def file_create_data(file):
 
     f['sort_key'] = f['title']
 
-    return f, n
+    return f, ret
 
 
 def process_files():
@@ -127,6 +129,7 @@ def generate_md_toc():
 
 # Generate HTML from MD {{{
 
+
 def dir_to_frontmatter(d, i_file):
     return []
 
@@ -154,10 +157,13 @@ def convert(force, syntax, extension, output_dir, input_file, css_file,
     lines = re.sub('\[([^]]+)\]\(([^)#]*)(?:#([^)]*))?\)', repl, lines)
 
     # Create metadata
-    frontmatter_dict, n = file_create_data(input_file)
-    frontmatter_dict['ltoc'] = []
+    fm, n = file_create_data(input_file)
+    fm['ltoc'] = []
+    if 'date' in fm:
+        args =  [int(i) for i in fm['date'].split('-')]
+        fm['date'] = datetime.date(args[0], args[1], args[2]).strftime('%b %e, %Y')
 
-    frontmatter = '---\n' + json.dumps(frontmatter_dict) + '\n---\n'
+    frontmatter = '---\n' + json.dumps(fm) + '\n---\n'
     lines = frontmatter + lines.split('\n', n)[n]
 
     # root_path doesn't give a path if on root folder already
@@ -237,6 +243,8 @@ if __name__ == '__main__':
             make_toc()
             shutil.copyfile(os.path.join(VWDIR, 'build', 'style.css'),
                     os.path.join(VWDIR, 'build', 'html', 'style.css'))
+            shutil.copyfile(os.path.join(VWDIR, 'build', 'logo.png'),
+                    os.path.join(VWDIR, 'build', 'html', 'logo.png'))
         with open(F_JSON_TOC, 'r') as f:
             s = f.read()
         data = json.loads(s)

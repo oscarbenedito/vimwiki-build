@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-
+<!-- head {{{ -->
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,69 +8,46 @@
 $for(author-meta)$
   <meta name="author" content="$author-meta$" />
 $endfor$
-$if(date-meta)$
-  <meta name="dcterms.date" content="$date-meta$" />
-$endif$
 $if(keywords)$
   <meta name="keywords" content="$for(keywords)$$keywords$$sep$, $endfor$" />
 $endif$
-  <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
 $for(css)$
   <link rel="stylesheet" href="$css$" />
 $endfor$
+$if(highlighting-css)$
+  <style>
+$highlighting-css$
+  </style>
+$endif$
+  <title>$if(title-prefix)$$title-prefix$ – $endif$$pagetitle$</title>
 </head>
-
+<!-- /head }}} -->
 <body>
-  <input type="checkbox" class="hidden" id="menu-control" />
-  <main class="container flex">
-    <aside class="book-menu">
-      <nav>
-        <h2 class="book-brand">
-          <a href="$relpath$/index.html"><span>Oscar's Wiki</span></a>
-        </h2>
-        <ul>
-          <li class="book-section-flat">
-            <a href="$relpath$/toc.html">TOC</a>
-            <ul>
-              $for(ltoc)$
-              <li>
-                $if(ltoc.title)$
-                <a href="$relpath$/$ltoc.url$"$if(ltoc.active)$ class="active" $endif$>$ltoc.title$</a>
-                $endif$
-                $if(ltoc.pages)$
-                <ul>
-                  $for(ltoc.pages)$
-                    <li><a href="$relpath$/$ltoc.pages.url$"$if(ltoc.pages.active)$ class="active" $endif$>$ltoc.pages.title$</a></li>
-                  $endfor$
-                </ul>
-                $endif$
-              </li>
-              $endfor$
-            </ul>
-          </li>
-        </ul>
-      </nav>
-    </aside>
-
-    <div class="book-page">
-
-      <article class="markdown">
-<h1>$pagetitle$</h1>
-$body$
-      </article>
-    </div>
-
-    <aside class="book-toc">
-      <nav id="$idprefix$TableOfContents">
-        $if(toc)$
-          $table-of-contents$
-        $else$
-        <ul>
-          <li><a href="#">$pagetitle$</a></li>
-        </ul>
+  <main class="container">
+    <section class="about">
+      <a href="$relpath$/index.html"><img src="$relpath$/logo.png" alt="Oscar's Personal Wiki"></a>
+      <h2><a href="$relpath$/toc.html" style="text-decoration: none;">Table of contents</a></h2>
+      <!-- <a href="" class="tagline" style="text-decoration: none;">Samarjeet Singh</a> -->
+    </section>
+    <section class="content">
+      <div class="post-container">
+        <h2 class="post-title">$pagetitle$</h2>
+        $if(tags)$
+        <div class="post-meta">
+          $if(tags)$<ul class="post-categories">$for(tags)$<li>$tags$</li>$endfor$</ul>$endif$
+          $if(date)$<div class="post-date">$date$</div>$endif$
+        </div>
+        $elseif(date)$
+        <div class="post-meta">
+          $if(tags)$<ul class="post-categories">$for(tags)$<li>$tags$</li>$endfor$</ul>$endif$
+          $if(date)$<div class="post-date">$date$</div>$endif$
+        </div>
         $endif$
-      </nav>
-    </aside>
+        <div class="post">
+$body$
+        </div>
+      </div>
+    </section>
   </main>
 </body>
 </html>
